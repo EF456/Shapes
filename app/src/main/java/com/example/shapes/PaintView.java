@@ -119,15 +119,20 @@ public class PaintView extends View {
 
     public void evaluateImageMatch(){
         //Evaluate image matching
+        //Image resize ration to speed up the evaluation process
+        int resizeRatio = 2;
+
         //Vytvor novu bitmpapu obsahujucu LEN spiralu, pomocou Path objektu priradenemu ku canvasu
         Bitmap evalBitmapSpirala = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas evalCanvasSpirala = new Canvas(evalBitmapSpirala);
         evalCanvasSpirala.drawPath(pathspiral.get(0).path, mPaint);
+        Bitmap evalBitmapSpiralaResized = Bitmap.createScaledBitmap(evalBitmapSpirala, width / resizeRatio, height / resizeRatio , false);
 
         //Vytvor novu bitmpapu obsahujucu LEN rucnu kresbu, pomocou Path objektu priradenemu ku canvasu
         Bitmap evalBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas evalCanvas = new Canvas(evalBitmap);
         evalCanvas.drawPath(paths.get(0).path, mPaint);
+        Bitmap evalBitmapResized = Bitmap.createScaledBitmap(evalBitmap, width / resizeRatio, height / resizeRatio , false);
 
         int match = 0; //Pocitadlo zhodnych nenulovych pixelov medzi oboma bitmapami
         int totalSourcePixels = 0; //Pocitadlo nenulovych pixelov podkladoveho obrazca (spirala)
@@ -137,14 +142,14 @@ public class PaintView extends View {
         //Ak je farba na podkladovom pixely zvys hodnotu totalSourcePixels pocitadla
         //Ak je farba na oboch zvys hodnotu match countera
         //Ak na podkladovom pixely nema byt farba, ale na rucnom obrazci je, zvys hodnotu miss pocitadla
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        for(int x = 0; x < width / resizeRatio; x++){
+            for(int y = 0; y < height / resizeRatio; y++){
                 int sourceColor = evalBitmapSpirala.getPixel(x, y);
                 int evalColor = evalBitmap.getPixel(x, y);
 
                 if(x%100==0 && y==0){
                     //Ukazovatel priebehu porovnavania
-                    System.out.println(x + "col with matches: " + match);
+                    System.out.println((float)Math.round((float)x / width * resizeRatio * 100) + "% with matches: " + match);
                 }
                 if(sourceColor == Color.BLACK) {
                     totalSourcePixels++;
