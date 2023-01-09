@@ -31,6 +31,7 @@ public class PaintView extends View {
     private Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
     public int width;
+    public int height;
 
     public PaintView(Context context) {
         super(null);
@@ -50,8 +51,8 @@ public class PaintView extends View {
     }   // end PaintView
 
     public void init(DisplayMetrics metrics){       // velkosť plochy, displej
-        int height = metrics.heightPixels;
-        int width = metrics.widthPixels;
+        height = metrics.heightPixels;
+        width = metrics.widthPixels;
 
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
@@ -113,6 +114,56 @@ public class PaintView extends View {
 
     public void touchUp() {
         mPath.lineTo(mX, mY);
+        evaluateImageMatch();
+    }
+
+    public void evaluateImageMatch(){
+        //Evaluate image matching
+        //Vytvor novu bitmpapu obsahujucu LEN spiralu, pomocou Path objektu priradenemu ku canvasu
+        Bitmap evalBitmapSpirala = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas evalCanvasSpirala = new Canvas(evalBitmapSpirala);
+        evalCanvasSpirala.drawPath(pathspiral.get(0).path, mPaint);
+
+        //Vytvor novu bitmpapu obsahujucu LEN rucnu kresbu, pomocou Path objektu priradenemu ku canvasu
+        Bitmap evalBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas evalCanvas = new Canvas(evalBitmap);
+        evalCanvas.drawPath(paths.get(0).path, mPaint);
+
+        int match = 0; //Pocitadlo zhodnych nenulovych pixelov medzi oboma bitmapami
+        int totalSourcePixels = 0; //Pocitadlo nenulovych pixelov podkladoveho obrazca (spirala)
+        int miss = 0; //Pocitadlo nenulovych pixelov rucneho obrazca
+
+        //Prejdi obrazky pixel po pixely a porovnaj ci sa navzajom zhoduju v x,y koordinate
+        //Ak je farba na podkladovom pixely zvys hodnotu totalSourcePixels pocitadla
+        //Ak je farba na oboch zvys hodnotu match countera
+        //Ak na podkladovom pixely nema byt farba, ale na rucnom obrazci je, zvys hodnotu miss pocitadla
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                int sourceColor = evalBitmapSpirala.getPixel(x, y);
+                int evalColor = evalBitmap.getPixel(x, y);
+
+                if(x%100==0 && y==0){
+                    //Ukazovatel priebehu porovnavania
+                    System.out.println(x + "col with matches: " + match);
+                }
+                if(sourceColor == Color.BLACK) {
+                    totalSourcePixels++;
+                    if (evalColor == Color.BLACK)
+                        match++;
+                }
+                else if(sourceColor == 0 && evalColor == Color.BLACK)
+                    miss++;
+            }
+        }
+
+        //Vypocitaj hodnotu zhody
+        float precision = (float) match / totalSourcePixels;
+        //Vypocitaj mieru vychylenie
+        float missRatio = (float) miss / totalSourcePixels;
+        System.out.println("Zhoda: " + (float)Math.round(precision * 100) + "%");
+        System.out.println("Miera odchylky: " + (float)Math.round(missRatio * 100) + "%");
+
+        //Nasledne ostava uz len zvolit metodiku na vyhodnotenie, ak je napr. precision nad 40% a missRatio pod 50% mozes to brat ako dobry vysledok
     }
 
     public boolean onTouchEvent(MotionEvent event) {
