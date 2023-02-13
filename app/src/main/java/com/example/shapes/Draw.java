@@ -13,7 +13,9 @@ public class Draw extends AppCompatActivity {
 
     private PaintView paintView;
     private Button btnClear;
-    private TextView textView;
+    private Button btnComp;
+    private TextView txtMatch;
+    private TextView txtMiss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,10 +23,23 @@ public class Draw extends AppCompatActivity {
         setContentView(R.layout.activity_draw);
         paintView = findViewById(R.id.paintView);
         btnClear = findViewById(R.id.btnClear);
+        Button btnComp = findViewById(R.id.btnComp);
+        txtMatch = findViewById(R.id.txtMatch);
+        txtMiss  = findViewById(R.id.txtMiss);
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 paintView.clear();
+            }
+        });
+        btnComp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paintView.evaluateImageMatch();
+                txtMatch.setTextSize(20);
+                txtMiss.setTextSize(20);
+                txtMatch.setText("Zhoda: " + (float)Math.round(paintView.precision * 100) + "%");
+                txtMiss.setText("Odchylka: " + (float)Math.round(paintView.missRatio * 100) + "%");
             }
         });
         DisplayMetrics metrics = new DisplayMetrics();

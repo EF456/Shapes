@@ -32,6 +32,8 @@ public class PaintView extends View {
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
     public int width;
     public int height;
+    float precision;
+    float missRatio;
 
     public PaintView(Context context) {
         super(null);
@@ -91,14 +93,14 @@ public class PaintView extends View {
     }   // end onDraw
 
     public void touchStart(float x, float y){
-    mPath = new Path();
-    FingerPath fp = new FingerPath(currentColor, strokeWidth, mPath);
-    paths.add(fp);
+        mPath = new Path();
+        FingerPath fp = new FingerPath(currentColor, strokeWidth, mPath);
+        paths.add(fp);
 
-    mPath.reset();
-    mPath.moveTo(x,y);
-    mX = x;
-    mY = y;
+        mPath.reset();
+        mPath.moveTo(x,y);
+        mX = x;
+        mY = y;
     }   // end touchStart
 
     public void touchMove(float x, float y){
@@ -151,20 +153,37 @@ public class PaintView extends View {
                     //Ukazovatel priebehu porovnavania
                     System.out.println((float)Math.round((float)x / width * resizeRatio * 100) + "% with matches: " + match);
                 }
+                if(sourceColor == 0 && evalColor == Color.BLACK) {
+                    int x1 = x;
+                    int y1 = y;
+                    for(int z = 0; z < 50; z++) {
+
+                        x1 = x1 + 1;
+                        y1 = y1 + 1;
+                        int evalColor1 = evalBitmap.getPixel(x1, y1);
+                        if(sourceColor == Color.BLACK) {
+                            if (evalColor1 == Color.BLACK) {
+                                match++;
+                                break;
+                            }
+                        }
+
+                    }
+
+                }
                 if(sourceColor == Color.BLACK) {
                     totalSourcePixels++;
                     if (evalColor == Color.BLACK)
                         match++;
                 }
-                else if(sourceColor == 0 && evalColor == Color.BLACK)
-                    miss++;
+                else miss++;
             }
         }
 
         //Vypocitaj hodnotu zhody
-        float precision = (float) match / totalSourcePixels;
+        precision = (float) match / totalSourcePixels;
         //Vypocitaj mieru vychylenie
-        float missRatio = (float) miss / totalSourcePixels;
+        missRatio = (float) miss / totalSourcePixels;
         System.out.println("Zhoda: " + (float)Math.round(precision * 100) + "%");
         System.out.println("Miera odchylky: " + (float)Math.round(missRatio * 100) + "%");
 
