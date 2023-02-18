@@ -157,19 +157,25 @@ public class PaintView extends View {
                     int x1 = x;
                     int y1 = y;
                     for(int z = 0; z < 50; z++) {
-
                         x1 = x1 + 1;
                         y1 = y1 + 1;
-                        int evalColor1 = evalBitmap.getPixel(x1, y1);
-                        if(sourceColor == Color.BLACK) {
-                            if (evalColor1 == Color.BLACK) {
+                        int sourceColor1 = evalBitmapSpirala.getPixel(x1, y1);
+                        if(sourceColor1 == Color.BLACK) {
                                 match++;
                                 break;
-                            }
                         }
-
                     }
-
+                    x1 = x;
+                    y1 = y;
+                    for(int z = 0; z < 50; z--) {
+                        x1 = x1 + 1;
+                        y1 = y1 + 1;
+                        int sourceColor1 = evalBitmapSpirala.getPixel(x1, y1);
+                        if(sourceColor1 == Color.BLACK) {
+                            match++;
+                            break;
+                        }
+                    }
                 }
                 if(sourceColor == Color.BLACK) {
                     totalSourcePixels++;
