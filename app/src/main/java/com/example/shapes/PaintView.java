@@ -167,9 +167,9 @@ public class PaintView extends View {
                     }
                     x1 = x;
                     y1 = y;
-                    for(int z = 0; z < 50; z--) {
-                        x1 = x1 + 1;
-                        y1 = y1 + 1;
+                    for(int z = 0; z < 50; z++) {
+                        x1 = x1 - 1;
+                        y1 = y1 - 1;
                         int sourceColor1 = evalBitmapSpirala.getPixel(x1, y1);
                         if(sourceColor1 == Color.BLACK) {
                             match++;
@@ -182,7 +182,7 @@ public class PaintView extends View {
                     if (evalColor == Color.BLACK)
                         match++;
                 }
-                else miss++;
+               // else miss++;
             }
         }
 
