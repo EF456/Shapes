@@ -146,43 +146,20 @@ public class PaintView extends View {
         //Ak na podkladovom pixely nema byt farba, ale na rucnom obrazci je, zvys hodnotu miss pocitadla
         for(int x = 0; x < width / resizeRatio; x++){
             for(int y = 0; y < height / resizeRatio; y++){
-                int sourceColor = evalBitmapSpirala.getPixel(x, y);
-                int evalColor = evalBitmap.getPixel(x, y);
+                int sourceColor = evalBitmapSpiralaResized.getPixel(x, y);
+                int evalColor = evalBitmapResized.getPixel(x, y);
 
                 if(x%100==0 && y==0){
                     //Ukazovatel priebehu porovnavania
                     System.out.println((float)Math.round((float)x / width * resizeRatio * 100) + "% with matches: " + match);
-                }
-                if(sourceColor == 0 && evalColor == Color.BLACK) {
-                    int x1 = x;
-                    int y1 = y;
-                    for(int z = 0; z < 50; z++) {
-                        x1 = x1 + 1;
-                        y1 = y1 + 1;
-                        int sourceColor1 = evalBitmapSpirala.getPixel(x1, y1);
-                        if(sourceColor1 == Color.BLACK) {
-                                match++;
-                                break;
-                        }
-                    }
-                    x1 = x;
-                    y1 = y;
-                    for(int z = 0; z < 50; z++) {
-                        x1 = x1 - 1;
-                        y1 = y1 - 1;
-                        int sourceColor1 = evalBitmapSpirala.getPixel(x1, y1);
-                        if(sourceColor1 == Color.BLACK) {
-                            match++;
-                            break;
-                        }
-                    }
                 }
                 if(sourceColor == Color.BLACK) {
                     totalSourcePixels++;
                     if (evalColor == Color.BLACK)
                         match++;
                 }
-               // else miss++;
+                else if(sourceColor == 0 && evalColor == Color.BLACK)
+                    miss++;
             }
         }
 
