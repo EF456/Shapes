@@ -12,7 +12,7 @@ import android.widget.Spinner;
 public class MainActivity extends AppCompatActivity implements
         AdapterView.OnItemSelectedListener {
 
-    String[] shapes = {"X", "Draw", "Tolerance"};
+    String[] shapes = {" ", "Draw", "Tolerance"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

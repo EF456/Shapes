@@ -3,6 +3,7 @@ package com.example.shapes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -68,6 +69,10 @@ public class Draw extends AppCompatActivity {
                 return true;
             case R.id.sinus:
                 Sinus();
+                return true;
+            case R.id.back:
+                Intent intent = new Intent(Draw.this, MainActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

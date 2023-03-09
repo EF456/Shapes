@@ -8,4 +8,7 @@
     <item android:title="Sinus"
         android:id="@+id/sinus"
         app:showAsAction="never" />
+    <item android:title="Back"
+        android:id="@+id/back"
+        app:showAsAction="never" />
 </menu>
